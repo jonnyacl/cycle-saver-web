@@ -1,24 +1,6 @@
 const prompt = require('prompt');
 const fs = require('fs');
 
-// var prompt_attributes = [
-//     {
-//         apiKey: 'apiKey',
-//     },
-//     {
-//         appId: 'appId',
-//     },
-//     {
-//         messagingSenderId: 'messagingSenderId',
-//     },
-//     {
-//         measurementId: 'measurementId',
-//     },
-//     {
-//         projectId: 'projectId',
-//     }
-// ];
-
 var prompt_attributes = [
     'apiKey','appId','messagingSenderId','measurementId','projectId'
 ];
