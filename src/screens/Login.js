@@ -1,9 +1,11 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { auth } from "firebase";
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import { useForm } from "react-hook-form";
 
 const Login = ({ setSignUp }) => {
+  // eslint-disable-next-line no-unused-vars
   const [userState, dispatch] = useContext(UserContext);
   const { handleSubmit } = useForm();
   const [email, setEmail] = useState("");
@@ -14,7 +16,7 @@ const Login = ({ setSignUp }) => {
   const signin = () => {
     setIsLoading(true);
     console.log(`Signing in ${email}`)
-    auth().signInWithEmailAndPassword(email, password).then(u => {
+    firebase.auth().signInWithEmailAndPassword(email, password).then(u => {
       setIsLoading(false);
       dispatch({ type: "LOGIN_SUCCESS", user: u });
     }).catch(e => {
@@ -60,6 +62,7 @@ const Login = ({ setSignUp }) => {
           </label>
           <label>Password
             <input
+              type="password"
               autoFocus
               onChange={e => {
                 setPassword(e.target.value);
@@ -67,10 +70,10 @@ const Login = ({ setSignUp }) => {
               }}
             />
           </label>
-          {isLoading ?  <button>Logging in...</button> : <button type="submit">Login</button>}
+          {isLoading ?  <button disabled={true}>Logging in...</button> : <button disabled={!validateLoginForm()} type="submit">Login</button>}
           {renderErrors()}
       </form>
-      <button onClick={() => {setSignUp(true)}}>Sign up here</button>
+      <button disabled={isLoading} onClick={() => {setSignUp(true)}}>Sign up here</button>
     </>
   );
 };

@@ -4,7 +4,9 @@ import { UserContext } from "./context/UserContext";
 import Auth from './screens/Auth';
 import Logout from './screens/Logout';
 import { StravaConnect } from './screens/StravaConnect';
-import firebase, { auth } from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 import config from './config';
 
 const App = () => {
@@ -17,6 +19,9 @@ const App = () => {
 
   if (!appInit) {
     firebase.initializeApp(config.firebaseConfig);
+    if (config.env.toLowerCase() === "dev") {
+      console.log("DEV MODE.")
+    }
     setAppInit(true);
   }
 
@@ -25,7 +30,7 @@ const App = () => {
 
   if (!userChecked) {
     // check for logged in user with firebase once
-    auth().onAuthStateChanged(signedInUser => {
+    firebase.auth().onAuthStateChanged(signedInUser => {
       if (signedInUser) {
         signedInUser.getIdToken().then(idToken => {
           const user = { details: signedInUser, idToken };

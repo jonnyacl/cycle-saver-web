@@ -19,11 +19,11 @@ prompt.get(prompt_attributes, (err, result) => {
         var projectId = result.projectId;
 
 
-        var message = "  apiKey : ***, appId : " + appId + ", messagingSenderId: " + messagingSenderId + ", measurementId: " + measurementId;
+        var message = `  apiKey : *** appId : ${appId}, messagingSenderId: ${messagingSenderId}, measurementId: ${measurementId}, project id: ${projectId}`;
 
         const expText = "export default {\n  env: process.env.REACT_APP_ENV,\n  firebaseConfig\n};"
 
-        const fileText = `const firebaseConfig = {\n  apiKey: "${apiKey}",\n  authDomain: "${projectId}.firebaseapp.com",\n  databaseURL: "https://${projectId}.firebaseio.com",\n  storageBucket: "${projectId}.appspot.com",\n  projectId: "${projectId}",\n  messagingSenderId: "${messagingSenderId}",\n  projectId: "${projectId}",\n  appId: "${appId}",\n  projectId: "${projectId}",\n  measurementId: "${measurementId}"\n}\n\n${expText}`;
+        const fileText = `const firebaseConfig = {\n  apiKey: "${apiKey}",\n  authDomain: "${projectId}.firebaseapp.com",\n  databaseURL: "https://${projectId}.firebaseio.com",\n  storageBucket: "${projectId}.appspot.com",\n  projectId: "${projectId}",\n  messagingSenderId: "${messagingSenderId}",\n  appId: "${appId}",\n  measurementId: "${measurementId}"\n}\n\n${expText}`;
 
         fs.writeFile("./src/config.js", fileText, e => {
             if (e) {

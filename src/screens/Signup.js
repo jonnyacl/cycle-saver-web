@@ -1,9 +1,11 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { auth } from "firebase";
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 const Signup = ({ setSignUp }) => {
 
+  // eslint-disable-next-line no-unused-vars
   const [userState, dispatch] = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,7 +15,7 @@ const Signup = ({ setSignUp }) => {
 
   const register = () => {
     setIsLoading(true);
-    auth().createUserWithEmailAndPassword(email, password).then(u => {
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(u => {
       dispatch({ type: "SIGNUP_SUCCESS", user: u });
       setIsLoading(false);
     }).catch(e => {
@@ -69,6 +71,7 @@ const Signup = ({ setSignUp }) => {
       </label>
       <label controlId="password" bsSize="large">Password
         <input
+          type="password"
           autoFocus
           onChange={e => {
             setPassword(e.target.value);
@@ -78,6 +81,7 @@ const Signup = ({ setSignUp }) => {
       </label>
       <label controlId="password" bsSize="large">Confirm Password
         <input
+          type="password"
           autoFocus
           value={confirmPassword}
           onChange={e => {
@@ -86,17 +90,17 @@ const Signup = ({ setSignUp }) => {
           }}
         />
       </label>
-      {isLoading ? <button>Signing up...</button> :
+      {isLoading ? <button disabled={true}>Signing up...</button> :
         <button
           onClick={() => register()}
-          disabled={!validateSignupForm() || isLoading}>Register
+          disabled={!validateSignupForm()}>Register
         </button>
       }
       <button
         onClick={() => register()}
         disabled={!validateSignupForm() || isLoading}>Register
       </button>
-      <button onClick={() => {setSignUp(false)}}>Login</button>
+      <button disabled={isLoading} onClick={() => {setSignUp(false)}}>Login</button>
       {renderFormErrors()}
       {renderSignupErrors()}
     </form>

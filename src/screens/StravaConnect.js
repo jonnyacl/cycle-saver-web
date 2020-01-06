@@ -29,7 +29,7 @@ export const StravaConnect = ({ user }) => {
 
     if (isLoading) {
         return (
-            <button>Connecting...</button>
+            <button disabled={true}>Connecting...</button>
         );
     }
     return (
