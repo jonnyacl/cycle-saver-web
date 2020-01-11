@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import config from '../config';
+import { UserContext } from "../context/UserContext";
 
-export const StravaConnect = ({ user }) => {
+export const StravaData = () => {
+
+    const [userState, dispatch] = useContext(UserContext);
+    const [stravaRequested, setStravaRequested] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
-    if (config.env.toLowerCase() === "dev") {
-        axios.defaults.baseURL = "http://localhost:5000/cycle-saver/us-central1/app/";
-    } else {
-        axios.defaults.baseURL = "https://us-central1-cycle-saver.cloudfunctions.net/app/";
+
+    if (userState.strava && useState.strava.connected && !stravaRequested) {
+        // fetch strava
+        setStravaRequested(true);
+
     }
-    axios.defaults.headers["Authorization"] = `Bearer ${user.idToken}`;
+   
     
     const connectStrava = () => {
         setIsLoading(true);
@@ -33,7 +37,5 @@ export const StravaConnect = ({ user }) => {
             <button disabled={true}>Connecting...</button>
         );
     }
-    return (
-       <button onClick={() => connectStrava()}>Connect Strava</button>
-    );
+    return null;
 };
