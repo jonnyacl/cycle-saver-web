@@ -3,7 +3,7 @@ import axios from 'axios';
 import { UserContext } from "../context/UserContext";
 import { extractQueries } from '../helpers';
 
-export const StravaToken = ({ routerProps }) => {
+export const SignupConfirm = ({ routerProps }) => {
 
     const [codeRequested, setCodeRequested] = useState(false);
     const [stravaMessage, setStravaMessage] = useState("");
@@ -11,7 +11,7 @@ export const StravaToken = ({ routerProps }) => {
 
     const queries = extractQueries(routerProps.history.location.search);
 
-    if (queries.error) {
+    if (queries.email) {
         let eMessage = `: ${queries.error}`;
         if (queries.error === "access_denied") {
             eMessage = ". You may have clicked cancel"

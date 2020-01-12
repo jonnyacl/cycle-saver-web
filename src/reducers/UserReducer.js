@@ -6,19 +6,22 @@ export const UserReducer = (state, action) => {
       axios.defaults.headers["Authorization"] = `Bearer ${action.user.idToken}`;
       return {
         ...state,
-        user: action.user,
+        user: action.user.signedInUser,
+        token: action.user.idToken,
       };
     case "LOGIN_SUCCESS":
       axios.defaults.headers["Authorization"] = `Bearer ${action.user.idToken}`;
       return {
         ...state,
-        user: action.user,
+        user: action.user.signedInUser,
+        token: action.user.idToken,
       };
     case "CHECK_LOGIN_SUCCESS":
       axios.defaults.headers["Authorization"] = `Bearer ${action.user.idToken}`;
       return {
         ...state,
-        user: action.user,
+        user: action.user.signedInUser,
+        token: action.user.idToken,
       };
     case "SIGNUP_FAIL":
     case "LOGIN_FAIL":

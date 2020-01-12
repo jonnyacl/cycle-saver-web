@@ -2,7 +2,7 @@ import React, { useReducer, useState } from 'react';
 import {
   BrowserRouter as Router,
   Route
- } from 'react-router-dom';
+} from 'react-router-dom';
 import { UserReducer } from "./reducers/UserReducer";
 import { UserContext } from "./context/UserContext";
 import Auth from './screens/Auth';
@@ -13,6 +13,7 @@ import { StravaData } from './screens/StravaData';
 import firebase from 'firebase/app';
 import axios from 'axios';
 import 'firebase/auth';
+import { SignupConfirm } from './screens/SignupConfirm';
 
 import config from './config';
 
@@ -46,7 +47,7 @@ const App = () => {
     firebase.auth().onAuthStateChanged(signedInUser => {
       if (signedInUser) {
         signedInUser.getIdToken().then(idToken => {
-          const user = { details: signedInUser, idToken };
+          const user = { signedInUser, idToken };
           userDispatch({ type: "CHECK_LOGIN_SUCCESS", user });
         }).catch(e => {
           console.log(`Failed to get id token, requests will fail, ${e}`);
@@ -84,6 +85,15 @@ const App = () => {
                 component={(props) =>
                   <StravaToken
                     user={userState.user}
+                    routerProps={props}
+                  />
+                }
+              />
+              <Route
+                path="/signup/confirm"
+                exact
+                component={(props) =>
+                  <SignupConfirm
                     routerProps={props}
                   />
                 }

@@ -17,8 +17,15 @@ const Login = ({ setSignUp }) => {
     setIsLoading(true);
     console.log(`Signing in ${email}`)
     firebase.auth().signInWithEmailAndPassword(email, password).then(u => {
-      setIsLoading(false);
-      dispatch({ type: "LOGIN_SUCCESS", user: u });
+      u.user.getIdToken().then(idToken => {
+        const user = { signedInUser: u.user, idToken };
+        setIsLoading(false);
+        dispatch({ type: "LOGIN_SUCCESS", user });
+      }).catch(e => {
+        console.log(`Failed to get id token, requests will fail, ${e}`);
+        setIsLoading(false);
+        dispatch({ type: "LOGIN_FAIL" });
+      });
     }).catch(e => {
       let message = "Incorrect user or password";
       if (e.message && e.message.includes("invalid-email")) {

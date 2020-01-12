@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import config from '../config';
 
 const Signup = ({ setSignUp }) => {
 
@@ -13,16 +14,32 @@ const Signup = ({ setSignUp }) => {
   const [signupError, setSignupError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const url = config.env === 'dev' ? 'http://localhost:3000/signup/confirm' : `https://${config.firebaseConfig.authDomain}/signup/confirm`;
+
   const register = () => {
     setIsLoading(true);
     firebase.auth().createUserWithEmailAndPassword(email, password).then(u => {
-      dispatch({ type: "SIGNUP_SUCCESS", user: u });
-      setIsLoading(false);
+      const actionCodeSettings = {
+        url: `${url}?email=${email}`,
+        handleCodeInApp: true
+      };
+      firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
+        .catch(e => {
+          console.log(`Failed to send confirm email: ${JSON.stringify(e)}`);
+        })
+      u.user.getIdToken().then(idToken => {
+        const user = { signedInUser: u.user, idToken };
+        setIsLoading(false);
+        dispatch({ type: "LOGIN_SUCCESS", user });
+      }).catch(e => {
+        console.log(`Failed to get id token, requests will fail, ${e}`);
+        dispatch({ type: "SIGNUP_FAIL" });
+      });
     }).catch(e => {
       console.log(`Failed to sign up ${e}`);
       setSignupError("Error signing up");
-      dispatch({ type: "SIGNUP_FAIL" });
       setIsLoading(false);
+      dispatch({ type: "SIGNUP_FAIL" });
     });
   };
 
@@ -58,7 +75,7 @@ const Signup = ({ setSignUp }) => {
 
   return (
     <form>
-      <label controlId="email" bsSize="large">Email
+      <label>Email
         <input
           autoFocus
           value={email}
@@ -69,7 +86,7 @@ const Signup = ({ setSignUp }) => {
           placeholder="Email"
         />
       </label>
-      <label controlId="password" bsSize="large">Password
+      <label>Password
         <input
           type="password"
           autoFocus
@@ -79,7 +96,7 @@ const Signup = ({ setSignUp }) => {
           }}
         />
       </label>
-      <label controlId="password" bsSize="large">Confirm Password
+      <label>Confirm Password
         <input
           type="password"
           autoFocus
@@ -94,12 +111,7 @@ const Signup = ({ setSignUp }) => {
         <button
           onClick={() => register()}
           disabled={!validateSignupForm()}>Register
-        </button>
-      }
-      <button
-        onClick={() => register()}
-        disabled={!validateSignupForm() || isLoading}>Register
-      </button>
+        </button>}
       <button disabled={isLoading} onClick={() => {setSignUp(false)}}>Login</button>
       {renderFormErrors()}
       {renderSignupErrors()}
