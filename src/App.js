@@ -32,7 +32,7 @@ const App = () => {
     }
     if (config.env && config.env.toLowerCase() === "dev") {
       console.log("DEV MODE.");
-      axios.defaults.baseURL = "http://localhost:5000/cycle-saver/us-central1/app/";
+      axios.defaults.baseURL = "http://localhost:5001/cycle-saver/us-central1/app/";
     } else {
       axios.defaults.baseURL = "https://us-central1-cycle-saver.cloudfunctions.net/app/";
     }

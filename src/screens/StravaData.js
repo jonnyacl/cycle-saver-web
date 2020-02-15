@@ -15,7 +15,6 @@ export const StravaData = () => {
 
     }
    
-    
     const connectStrava = () => {
         setIsLoading(true);
         console.log("Connecting to Strava...");
