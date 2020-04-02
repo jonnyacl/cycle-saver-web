@@ -15,7 +15,7 @@ const Logout = () => {
             setIsLoading(false);
             dispatch({ type: "LOGOUT_SUCCESS" });
         }).catch(e => {
-            console.log(`Failed to logout properly: ${e}`);
+            console.error(`Failed to logout properly: ${e}`);
             setIsLoading(false);
             dispatch({ type: "LOGOUT_FAIL" });
         })

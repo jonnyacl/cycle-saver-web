@@ -2,6 +2,11 @@
   "name": "cycle-saver-web",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Jonny Lea",
+    "email": "lea.jonny@gmail.com",
+    "url": "https://github.com/jonnyacl"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -22,7 +27,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "REACT_APP_ENV=dev react-scripts start"
+    "dev": "REACT_APP_ENV=dev react-scripts start",
+    "deploy": "react-scripts build && firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"

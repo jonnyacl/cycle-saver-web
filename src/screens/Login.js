@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useForm } from "react-hook-form";
+import '../styles/buttons.css';
 
 const Login = ({ setSignUp }) => {
   // eslint-disable-next-line no-unused-vars
@@ -15,14 +16,14 @@ const Login = ({ setSignUp }) => {
 
   const signin = () => {
     setIsLoading(true);
-    console.log(`Signing in ${email}`)
+    console.log(`Signing in ${email}`);
     firebase.auth().signInWithEmailAndPassword(email, password).then(u => {
       u.user.getIdToken().then(idToken => {
         const user = { signedInUser: u.user, idToken };
         setIsLoading(false);
         dispatch({ type: "LOGIN_SUCCESS", user });
       }).catch(e => {
-        console.log(`Failed to get id token, requests will fail, ${e}`);
+        console.error(`Failed to get id token, requests will fail, ${e}`);
         setIsLoading(false);
         dispatch({ type: "LOGIN_FAIL" });
       });
@@ -31,7 +32,8 @@ const Login = ({ setSignUp }) => {
       if (e.message && e.message.includes("invalid-email")) {
         message = "Invalid email"
       }
-      console.log(message);
+      console.error(e);
+      console.error(message);
       setIsLoading(false);
       setLoginError(message);
       dispatch({ type: "LOGIN_FAIL" });
@@ -55,6 +57,7 @@ const Login = ({ setSignUp }) => {
 
   return (
     <>
+      <div>Login</div>
       <form onSubmit={handleSubmit(signin)}>
         <label>Email
           <input
@@ -80,7 +83,7 @@ const Login = ({ setSignUp }) => {
           {isLoading ?  <button disabled={true}>Logging in...</button> : <button disabled={!validateLoginForm()} type="submit">Login</button>}
           {renderErrors()}
       </form>
-      <button disabled={isLoading} onClick={() => {setSignUp(true)}}>Sign up here</button>
+      <div className="clickable" onClick={() => {setSignUp(true)}}>Sign up here</div>
     </>
   );
 };

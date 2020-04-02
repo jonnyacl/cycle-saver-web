@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import config from '../config';
+import '../styles/buttons.css';
 
 const Signup = ({ setSignUp }) => {
 
@@ -23,20 +24,20 @@ const Signup = ({ setSignUp }) => {
         url: `${url}?email=${email}`,
         handleCodeInApp: true
       };
-      firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
+      u.user.sendEmailVerification(actionCodeSettings)
         .catch(e => {
-          console.log(`Failed to send confirm email: ${JSON.stringify(e)}`);
+          console.error(`Failed to send confirm email: ${JSON.stringify(e)}`);
         })
       u.user.getIdToken().then(idToken => {
         const user = { signedInUser: u.user, idToken };
         setIsLoading(false);
         dispatch({ type: "LOGIN_SUCCESS", user });
       }).catch(e => {
-        console.log(`Failed to get id token, requests will fail, ${e}`);
+        console.error(`Failed to get id token, requests will fail, ${e}`);
         dispatch({ type: "SIGNUP_FAIL" });
       });
     }).catch(e => {
-      console.log(`Failed to sign up ${e}`);
+      console.error(`Failed to sign up ${e}`);
       setSignupError("Error signing up");
       setIsLoading(false);
       dispatch({ type: "SIGNUP_FAIL" });
@@ -60,7 +61,7 @@ const Signup = ({ setSignUp }) => {
 
   const renderFormErrors = () => {
     let formError = null;
-    if (password !== confirmPassword) {
+    if (password && confirmPassword && password !== confirmPassword) {
       formError = "Passwords do not match";
     }
     if (!!formError) {
@@ -74,48 +75,52 @@ const Signup = ({ setSignUp }) => {
   };
 
   return (
-    <form>
-      <label>Email
-        <input
-          autoFocus
-          value={email}
-          onChange={e => {
-            setEmail(e.target.value);
-            setSignupError("");
-          }}
-          placeholder="Email"
-        />
-      </label>
-      <label>Password
-        <input
-          type="password"
-          autoFocus
-          onChange={e => {
-            setPassword(e.target.value);
-            setSignupError("");
-          }}
-        />
-      </label>
-      <label>Confirm Password
-        <input
-          type="password"
-          autoFocus
-          value={confirmPassword}
-          onChange={e => {
-            setConfirmPassword(e.target.value);
-            setSignupError("");
-          }}
-        />
-      </label>
-      {isLoading ? <button disabled={true}>Signing up...</button> :
-        <button
-          onClick={() => register()}
-          disabled={!validateSignupForm()}>Register
-        </button>}
-      <button disabled={isLoading} onClick={() => {setSignUp(false)}}>Login</button>
-      {renderFormErrors()}
-      {renderSignupErrors()}
-    </form>
+    <>
+      <div>Signup</div>
+      <form>
+        <label>Email
+          <input
+            autoFocus
+            value={email}
+            onChange={e => {
+              setEmail(e.target.value);
+              setSignupError("");
+            }}
+            placeholder="Email"
+          />
+        </label>
+        <label>Password
+          <input
+            type="password"
+            autoFocus
+            onChange={e => {
+              setPassword(e.target.value);
+              setSignupError("");
+            }}
+          />
+        </label>
+        <label>Confirm Password
+          <input
+            type="password"
+            autoFocus
+            value={confirmPassword}
+            onChange={e => {
+              setConfirmPassword(e.target.value);
+              setSignupError("");
+            }}
+          />
+        </label>
+        {isLoading ? <button disabled={true}>Signing up...</button> :
+          <button
+            onClick={() => register()}
+            disabled={!validateSignupForm()}>Register
+          </button>}
+        
+        {renderFormErrors()}
+        {renderSignupErrors()}
+      </form>
+      <div className="clickable" onClick={() => {setSignUp(false)}}>Login here</div>
+    </>
   );
 }
 

@@ -2,14 +2,16 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { UserContext } from "../context/UserContext";
 import { extractQueries } from '../helpers';
+import { useHistory } from 'react-router-dom';
 
-export const StravaToken = ({ routerProps }) => {
+export const StravaToken = () => {
 
     const [codeRequested, setCodeRequested] = useState(false);
     const [stravaMessage, setStravaMessage] = useState("");
     const [userState, dispatch] = useContext(UserContext);
+    const history = useHistory();
 
-    const queries = extractQueries(routerProps.history.location.search);
+    const queries = extractQueries(history.location.search);
 
     if (queries.error) {
         let eMessage = `: ${queries.error}`;
@@ -30,7 +32,7 @@ export const StravaToken = ({ routerProps }) => {
             dispatch({ type: "STRAVA_TOKEN_SUCCESS" });
             setCodeRequested(true);
         }).catch(e => {
-            console.log(`Failed to obtain strava token: ${JSON.stringify(e)}`);
+            console.error('Failed to obtain strava token', e);
             dispatch({ type: "STRAVA_TOKEN_FAIL" });
             setCodeRequested(true);
         });

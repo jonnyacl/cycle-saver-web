@@ -25,8 +25,10 @@ export const StravaData = () => {
                 window.location = resp.data.url;
             }
         }).catch(e => {
-            console.log(`Error connecting to strava: ${e.message}`);
-            console.log(`REsp: ${e.response}`);
+            console.error(`Error connecting to strava: ${e.message}`);
+            if (e.response) {
+                console.error(`Resp: ${e.response}`);
+            }
             setIsLoading(false);
         });
     }

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import stravaButton from '../resources/images/stravaConnect.png';
+import '../styles/buttons.css';
 
 export const StravaConnect = ({ user }) => {
 
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const connectStrava = () => {
         setIsLoading(true);
@@ -15,18 +18,39 @@ export const StravaConnect = ({ user }) => {
                 window.location = resp.data.url;
             }
         }).catch(e => {
-            console.log(`Error connecting to strava: ${e.message}`);
-            console.log(`REsp: ${JSON.stringify(e.response)}`);
+            const message = `Error connecting to strava: ${e.message}`;
+            console.error(message);
+            if (e.response) {
+                console.error(`Resp: ${JSON.stringify(e.response)}`);
+            }
+            setErrorMessage(message);
             setIsLoading(false);
         });
     }
 
+    const renderStravaMessage = ( )=> {
+        return(
+            <div>
+                First, please connect your Strava account so we can analyse your commutes to calculate your savings.
+            </div>
+        );
+    }
+
     if (isLoading) {
         return (
-            <button disabled={true}>Connecting...</button>
+            <div>
+                {renderStravaMessage()}
+                <img className="clickable" src={stravaButton} alt="strava_connecting"/>
+            </div>
         );
     }
     return (
-       <button onClick={() => connectStrava()}>Connect Strava</button>
+        <div>
+            {renderStravaMessage()}
+            <img className="clickable" src={stravaButton} alt="strava_connect" onClick={() => connectStrava()}/>
+            {errorMessage ? 
+                <div>{errorMessage}</div>
+            : null}
+        </div>
     );
 };
