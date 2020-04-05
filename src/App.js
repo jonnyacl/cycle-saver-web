@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -7,7 +7,6 @@ import { UserReducer } from "./reducers/UserReducer";
 import { UserContext } from "./context/UserContext";
 import Auth from './screens/Auth';
 import Nav from './components/Nav';
-import { StravaConnect } from './screens/StravaConnect';
 import { StravaToken } from './screens/StravaToken';
 import { StravaData } from './screens/StravaData';
 import firebase from 'firebase/app';
@@ -17,6 +16,8 @@ import { SignupConfirm } from './screens/SignupConfirm';
 import PoweredByStrava from './resources/images/poweredbystrava.png';
 import './App.css';
 import { extractQueries } from './helpers';
+import Profile from './screens/Profile';
+import Settings from './screens/Settings';
 
 import config from './config';
 
@@ -95,35 +96,52 @@ const App = () => {
                 <Route
                     path="/signup/confirm"
                     exact
-                    component={(props) =>
-                      <SignupConfirm
-                        routerProps={props}
-                      />
+                    component={() =>
+                      <SignupConfirm />
                     }
                   />
               </div>
             : userDetails && userState.user ?
               <>
                 <div className="app-intro">
-                  <div>See how much you save by running, walking or cycling to work. N+1</div>
-                  {userState.strava ? null : <StravaConnect user={userState.user}/>}
                   <Route
                     path="/strava/token"
                     exact
-                    component={(props) =>
+                    component={() =>
                       <StravaToken
                         user={userState.user}
-                        routerProps={props}
                       />
                     }
                   />
-                  <StravaData />
+                  <Route
+                    path="/profile"
+                    exact
+                    component={() =>
+                      <Profile />
+                    }
+                  />
+                  <Route
+                    path="/settings"
+                    exact
+                    component={() =>
+                      <Settings />
+                    }
+                  />
+                  <Route
+                    path="/"
+                    exact
+                    component={() =>
+                      <StravaData />
+                    }
+                  />
                 </div>
               </>
             : userDetails && <Auth />}
           </div>
           <footer className="app-footer">
-            <img alt="powered_by_strava" src={PoweredByStrava} />
+            <a href="https://www.strava.com" target="_blank" rel="noopener noreferrer">
+              <img alt="powered_by_strava" src={PoweredByStrava} />
+            </a>
           </footer>
         </div>
       </Router>

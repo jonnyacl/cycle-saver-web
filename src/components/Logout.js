@@ -22,10 +22,10 @@ const Logout = () => {
     };
 
     if (isLoading) {
-        return (<button disabled={true}>Logging out...</button>);
+        return (<div className="app-nav-action">Logging out...</div>);
     }
     return (
-        <button onClick={() => {logout()}}>Logout</button>
+        <div className="app-nav-action" onClick={() => {logout()}}>Logout</div>
     );
 }
 

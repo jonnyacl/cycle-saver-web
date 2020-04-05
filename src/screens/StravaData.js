@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import { UserContext } from "../context/UserContext";
+import { StravaConnect } from "../components/StravaConnect";
 
 export const StravaData = () => {
 
+    // eslint-disable-next-line no-unused-vars
     const [userState, dispatch] = useContext(UserContext);
     const [stravaRequested, setStravaRequested] = useState(false);
 
@@ -11,26 +12,8 @@ export const StravaData = () => {
 
     if (userState.strava && useState.strava.connected && !stravaRequested) {
         // fetch strava
-        setStravaRequested(true);
-
-    }
-   
-    const connectStrava = () => {
         setIsLoading(true);
-        console.log("Connecting to Strava...");
-        axios.post("strava/oauth", { env: "web" }).then(resp => {
-            console.log(`Connecting to strava: ${JSON.stringify(resp.data)}`);
-            setIsLoading(false);
-            if (resp.data.url) {
-                window.location = resp.data.url;
-            }
-        }).catch(e => {
-            console.error(`Error connecting to strava: ${e.message}`);
-            if (e.response) {
-                console.error(`Resp: ${e.response}`);
-            }
-            setIsLoading(false);
-        });
+        setStravaRequested(true);
     }
 
     if (isLoading) {
@@ -38,5 +21,16 @@ export const StravaData = () => {
             <button disabled={true}>Connecting...</button>
         );
     }
-    return null;
+    return (
+        <div>
+            <div>See how much you save by running, walking or cycling to work. N+1</div>
+            {userState && userState.strava ? null : userState &&
+                <div>
+                    <div>
+                        First, please connect your Strava account so we can analyse your commutes to calculate your savings.
+                    </div>
+                    <StravaConnect />
+                </div>}
+        </div>
+    );
 };

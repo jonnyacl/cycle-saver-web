@@ -16,15 +16,32 @@
 .app-header {
   background-color: #282c34;
   display: flex;
-  flex-direction: column;
+  padding: 10px;
   align-items: left;
-  justify-content: center;
+  justify-content: space-between;
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.app-logout {
+.app-title {
+  display: flex;
+  flex-direction: column;
+  float: left;
+  cursor: pointer;
+}
 
+.app-nav {
+  text-align: center;
+  float: right;
+}
+
+.app-nav-action {
+  font-size: calc(5px + 1vmin);
+  cursor: pointer;
+}
+
+.app-nav-action:hover {
+  text-decoration: underline;
 }
 
 html, body {

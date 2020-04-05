@@ -55,6 +55,9 @@ export const UserReducer = (state, action) => {
       return {
         ...state,
       };
+    case 'REFRESH_TOKEN':
+      axios.defaults.headers["Authorization"] = `Bearer ${action.token}`;
+      return state;
     default:
       return state;
   }

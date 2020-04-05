@@ -3,6 +3,7 @@ import axios from 'axios';
 import { UserContext } from "../context/UserContext";
 import { extractQueries } from '../helpers';
 import { useHistory } from 'react-router-dom';
+import { StravaConnect } from '../components/StravaConnect';
 
 export const StravaToken = () => {
 
@@ -21,6 +22,7 @@ export const StravaToken = () => {
         return (
             <div>
                 Failed to connect Strava{eMessage}. Please try again if you wish to see how much you are saving (earning)!
+                <StravaConnect />
             </div>
         );
     } else if (queries.code && !codeRequested) {
