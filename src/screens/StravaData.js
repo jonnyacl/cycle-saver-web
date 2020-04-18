@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { UserContext } from "../context/UserContext";
 import { StravaConnect } from "../components/StravaConnect";
+import ApiCaller from '../api/ApiWrapper';
 
 export const StravaData = () => {
 
@@ -10,15 +11,24 @@ export const StravaData = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    if (userState.strava && useState.strava.connected && !stravaRequested) {
-        // fetch strava
+    if (userState && userState.user && !stravaRequested) {
+        // fetch strava data
+        const { user } = userState;
         setIsLoading(true);
         setStravaRequested(true);
+        const apiReq = new ApiCaller(`/fakeuser/athletes`, "get");
+        apiReq.execute().then(athlete => {
+            console.log("Athlete", athlete);
+            setIsLoading(false);
+        }).catch(e => {
+            console.error("No athlete", e);
+            setIsLoading(false);
+        });
     }
 
     if (isLoading) {
         return (
-            <button disabled={true}>Connecting...</button>
+            <div>Loading...</div>
         );
     }
     return (
