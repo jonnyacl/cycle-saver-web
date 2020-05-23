@@ -32,14 +32,6 @@ export const UserReducer = (state, action) => {
         ...state,
         user: null,
       };
-    case 'STRAVA_TOKEN_SUCCESS':
-      return {
-        ...state,
-        strava: {
-          ...state.strava,
-          connected: true,
-        }
-      }
     case 'STRAVA_DATA_SUCCESS':
       return {
         ...state,
@@ -50,11 +42,6 @@ export const UserReducer = (state, action) => {
           activities: []
         }
       }
-    case 'STRAVA_DATA_FAIL':
-    case 'STRAVA_TOKEN_FAIL':
-      return {
-        ...state,
-      };
     case 'REFRESH_TOKEN':
       axios.defaults.headers["Authorization"] = `Bearer ${action.token}`;
       return state;

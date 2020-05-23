@@ -16,7 +16,7 @@ export const StravaData = () => {
         const { user } = userState;
         setIsLoading(true);
         setStravaRequested(true);
-        const apiReq = new ApiCaller(`/fakeuser/athletes`, "get");
+        const apiReq = new ApiCaller(`/${user.uid}/athletes`, "get");
         apiReq.execute().then(athlete => {
             console.log("Athlete", athlete);
             setIsLoading(false);
