@@ -1,12 +1,16 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { UserContext } from '../context/UserContext';
 import '../styles/Settings.css';
+import Modal from '../components/Modal';
+import ApiCaller from '../api/ApiWrapper';
 
 const Profile = () => {
 
-    const [userState] = useContext(UserContext);
+    const [userState, dispatch] = useContext(UserContext);
     const [modal, setModal] = useState(null);
     const settingsRef = useRef();
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const profile = userState.user;
     const stravaProfile = userState && userState.strava && userState.strava.profile? userState.strava.profile : null;
@@ -14,10 +18,6 @@ const Profile = () => {
     useEffect(() => {
         console.log('strava profile', stravaProfile);
     }, [stravaProfile]);
-
-    useEffect(() => {
-        console.log('modal', modal);
-    }, [modal]);
 
     useEffect(() => {
         document.addEventListener("mousedown", cancel);
@@ -37,14 +37,50 @@ const Profile = () => {
         setModal({ type: "disconnect", source: integration });
     };
     
-    const cancel = () => {
+    const cancel = (e) => {
+        if (e && e.target && !e.target.contains(settingsRef.current)) {
+            return;
+        }
         setModal(null);
-    }
+        setErrorMessage("");
+        setIsLoading(false);
+    };
 
-    const handleRevoke = () => {}
+    const handleRevoke = () => {
+        setIsLoading(true);
+        switch(modal.type) {
+            case "disconnect":
+                const disconnectCall = new ApiCaller(`/${profile.uid}/${modal.source}/deauthorize`, "POST");
+                disconnectCall.execute().then(() => {
+                    setIsLoading(false);
+                    dispatch({ type: `${modal.source.toUpperCase()}_DISCONNECT` });
+                }).catch(e => {
+                    console.error(`Failed to disconnect ${modal.source}`, e);
+                    setErrorMessage(`Failed to disconnect ${modal.source}`);
+                    setIsLoading(false);
+                });
+                break;
+            case "delete":
+                setIsLoading(false);
+                break;
+            default:
+                setIsLoading(false);
+                break;
+        }
+    };
+
+    const modalContent = () => {
+        if (modal && modal.type && modal.type === "delete") {
+            return (<div>Are you sure you want to delete your Cycle Saver account?</div>);
+        } else if (modal && modal.type && modal.type === "disconnect") {
+            return (<div>Are you sure you want to disconnect your {modal.source} account?</div>);
+        }
+        return null;
+    };
+        
 
     return (
-        <div className={modal ? "Settings-hide" : "Settings"}>
+        <div className={modal ? "Settings-hide" : "Settings"} ref={settingsRef} >
             <h3>Settings</h3>
             <div>User ID: {profile.uid}</div>
             <div>Email: {profile.email}</div>
@@ -58,19 +94,15 @@ const Profile = () => {
                     <button onClick={() => onClickDisconnect("strava")}>Disconnect Strava</button>
                 </>
             )}
-            {modal && (
-                <div className="SettingsModal" ref={settingsRef}>
-                    <div>
-                        <span onClick={() => cancel()}>&times;</span>
-                        {modal.type === "delete" ? 
-                            <div>Are you sure you want to delete your Cycle Saver account?</div>
-                            : <div>Are you sure you want to disconnect your {modal.source} account?</div>
-                        }
-                        <p />
-                        <span onClick={() => handleRevoke()}>Confirm</span>
-                    </div>
-                </div>
-            )}
+            <Modal 
+                show={!!modal}
+                className="SettingsModal"
+                content={modalContent()}
+                onHide={cancel}
+                onConfirm={handleRevoke}
+                isLoading={isLoading}
+                errorMessage={errorMessage}
+            />
         </div>
     );
 
