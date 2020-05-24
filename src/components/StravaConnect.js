@@ -9,7 +9,7 @@ export const StravaConnect = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const [userState, dispatch] = useContext(UserContext);
+    const [userState] = useContext(UserContext);
 
     const user = userState ? userState.user : null;
 
@@ -18,10 +18,10 @@ export const StravaConnect = () => {
         console.log("Connecting to Strava...");
         const apiReq = new ApiCaller("strava/oauth", "post");
         apiReq.execute({ env: "web", user_id: user.uid }).then(resp => {
-            console.log(`Connecting to strava: ${JSON.stringify(resp.data)}`);
+            console.log(`Connecting to strava: ${JSON.stringify(resp)}`);
             setIsLoading(false);
-            if (resp.data.url) {
-                window.location = resp.data.url;
+            if (resp.url) {
+                window.location = resp.url;
             }
         }).catch(e => {
             const message = `Error connecting to strava: ${e.message}`;

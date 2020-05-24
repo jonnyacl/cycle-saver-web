@@ -1,20 +1,30 @@
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 
 const Profile = () => {
 
-    const history = useHistory();
-    const [userState, dispatch] = useContext(UserContext);
+    const [userState] = useContext(UserContext);
 
-    const takeMeHome = () => {
-        history.push("/");
-    };
-
+    const profile = userState.user;
+    const stravaProfile = userState && userState.strava && userState.strava.profile? userState.strava.profile : null;
+    console.log('strava profile', stravaProfile);
     return (
-        <div>Profile</div>
+        <>
+            {stravaProfile && (
+            <>
+            <h3>{stravaProfile.firstname} {stravaProfile.lastname}</h3>
+            <img src={stravaProfile.profile} alt="profile_pic"/>
+            </>
+            )}
+            <div>Email: {profile.email}</div>
+            {stravaProfile && (
+            <>
+            <div>Country: {stravaProfile.country}</div>
+            <div>City: {stravaProfile.city}</div>
+            </>
+            )}
+        </>
     );
-
 };
 
 export default Profile;

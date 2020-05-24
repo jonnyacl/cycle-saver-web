@@ -18,6 +18,7 @@ import './App.css';
 import { extractQueries } from './helpers';
 import Profile from './screens/Profile';
 import Settings from './screens/Settings';
+import ApiCaller from './api/ApiWrapper';
 
 import config from './config';
 
@@ -61,15 +62,27 @@ const App = () => {
     firebase.auth().onAuthStateChanged(signedInUser => {
       if (signedInUser) {
         if (config.env && config.env.toLowerCase() === "dev") {
-          console.log(signedInUser);
+          console.log('firebase user', signedInUser);
         }
         if (!signedInUser.emailVerified) {
           setUnverified(true);
         }
         signedInUser.getIdToken().then(idToken => {
           const user = { signedInUser, idToken };
-          userDispatch({ type: "CHECK_LOGIN_SUCCESS", user });
-          setUserDetails(true);
+          axios.defaults.headers["Authorization"] = `Bearer ${idToken}`;
+          // fetch strava profile
+          const apiReq = new ApiCaller(`/${user.signedInUser.uid}/athletes`, "get");
+          apiReq.execute().then(athletes => {
+              if (athletes.length) {
+                  const athlete = athletes[0];
+                  userDispatch({ type: 'STRAVA_PROFILE_SUCCESS', athlete, user });
+                  setUserDetails(true);
+              }
+          }).catch(() => {
+              console.log("No athlete");
+              userDispatch({ type: "CHECK_LOGIN_SUCCESS", user });
+              setUserDetails(true);
+          });
         }).catch(e => {
           console.error(`Failed to get id token, requests will fail, ${e}`);
           userDispatch({ type: "CHECK_LOGIN_FAIL" });
@@ -103,7 +116,7 @@ const App = () => {
               </div>
             : userDetails && userState.user ?
               <>
-                <div className="app-intro">
+                <div className="app-main">
                   <Route
                     path="/strava/token"
                     exact

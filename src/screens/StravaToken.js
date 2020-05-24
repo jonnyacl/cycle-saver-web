@@ -7,18 +7,9 @@ import { StravaConnect } from '../components/StravaConnect';
 
 export const StravaToken = () => {
 
-    const [userState, dispatch] = useContext(UserContext);
+    const [userState] = useContext(UserContext);
     const history = useHistory();
     const queries = extractQueries(history.location.search);
-
-    const failedToConnect = (eMessage) => {
-        return (
-            <div>
-                Failed to connect to Strava{eMessage}. Please try again if you wish to see how much you are saving (earning)!
-                <StravaConnect />
-            </div>
-        );
-    }
 
     useEffect(() => {
         // obtain a token!
@@ -32,14 +23,19 @@ export const StravaToken = () => {
                 history.push("?status=fail");
             });
         }
-    }, []);
+    }, [history, queries, userState.user.uid]);
 
     if (queries.error) {
         let eMessage = `: ${queries.error}`;
         if (queries.error === "access_denied") {
             eMessage = ". You may have clicked cancel"
         }
-        return failedToConnect(eMessage);
+        return (
+            <div>
+                Failed to connect to Strava{eMessage}. Please try again if you wish to see how much you are saving (earning)!
+                <StravaConnect />
+            </div>
+        );
     }
     return null;
 };

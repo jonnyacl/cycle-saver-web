@@ -16,7 +16,7 @@ class ApiCaller {
                 return new Promise((resolve, reject) => {
                     axios.get(this.endpoint).then(resp => {
                         this.errored = false;
-                        resolve(resp);
+                        resolve(resp.data);
                     }).catch(err => {
                         this.handleError(err, reject);
                     });
@@ -25,7 +25,7 @@ class ApiCaller {
                 return new Promise((resolve, reject) => {
                     axios.post(this.endpoint, body).then(resp => {
                         this.errored = false;
-                        resolve(resp);
+                        resolve(resp.data);
                     }).catch(err => {
                         this.handleError(err, reject);
                     });
