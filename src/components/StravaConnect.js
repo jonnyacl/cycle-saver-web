@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import stravaButton from '../resources/images/stravaConnect.png';
-import '../styles/buttons.css';
 import ApiCaller from '../api/ApiWrapper';
 import { UserContext } from '../context/UserContext';
 

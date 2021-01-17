@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { UserContext } from '../context/UserContext';
-import '../styles/Settings.css';
 import Modal from '../components/Modal';
 import ApiCaller from '../api/ApiWrapper';
+import { StravaConnect } from '../components/StravaConnect';
 
 const Profile = () => {
 
@@ -86,14 +86,14 @@ const Profile = () => {
             <div>Email: {profile.email}</div>
             <button onClick={() => onClickDelete()}>Delete Account</button>
             <h4>Integrations</h4>
-            {stravaProfile && (
+            {stravaProfile ? (
                 <>
                     <h5>Strava</h5>
                     <div>Athlete ID: {stravaProfile.id}</div>
                     <div>Username: {stravaProfile.username}</div>
                     <button onClick={() => onClickDisconnect("strava")}>Disconnect Strava</button>
                 </>
-            )}
+            ) : <StravaConnect />}
             <Modal 
                 show={!!modal}
                 className="SettingsModal"

@@ -5,8 +5,7 @@ import 'firebase/auth';
 
 const Logout = () => {
 
-    // eslint-disable-next-line no-unused-vars
-    const [userState, dispatch] = useContext(UserContext);
+    const [, dispatch] = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
 
     const logout = () => {

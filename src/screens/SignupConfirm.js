@@ -24,6 +24,8 @@ export const SignupConfirm = () => {
             setErrorMessage(`Failed to confirm email. ${err}`);
             setLoading(false);
         });
+    } else {
+        setLoading(false);
     }
 
     if (loading) {
@@ -34,7 +36,7 @@ export const SignupConfirm = () => {
                 {errorMessage}
             </div>
         );
-        }
+    }
     return (
         <div>
             Failed to confirm email. Please contact support.

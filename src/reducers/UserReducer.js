@@ -29,8 +29,14 @@ export const UserReducer = (state, action) => {
     case "LOGOUT_FAIL":
     case "LOGOUT_SUCCESS":
       return {
-        ...state,
         user: null,
+      };
+    case 'PROFILE_SUCCESS':
+      axios.defaults.headers["Authorization"] = `Bearer ${action.user.idToken}`;
+      return {
+        ...state,
+        user: action.user.signedInUser,
+        token: action.user.idToken,
       };
     case 'STRAVA_PROFILE_SUCCESS':
       axios.defaults.headers["Authorization"] = `Bearer ${action.user.idToken}`;

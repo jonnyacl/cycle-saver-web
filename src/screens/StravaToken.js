@@ -7,7 +7,7 @@ import { StravaConnect } from '../components/StravaConnect';
 
 export const StravaToken = () => {
 
-    const [userState] = useContext(UserContext);
+    const [userState, userDispatch] = useContext(UserContext);
     const history = useHistory();
     const queries = extractQueries(history.location.search);
 
@@ -17,13 +17,15 @@ export const StravaToken = () => {
             console.log(`Obtaining a token with code ${queries.code}`);
             axios.post("strava/token", { code: queries.code, user_id: userState.user.uid }).then(resp => {
                 console.log(`Connected to strava: ${JSON.stringify(resp.data)}`);
+                userDispatch({ type: 'STRAVA_PROFILE_SUCCESS', athlete: resp.data, user: userState.user });
                 history.push("/");
             }).catch(e => {
                 console.error('Failed to obtain strava token', e);
                 history.push("?status=fail");
             });
         }
-    }, [history, queries, userState.user.uid]);
+    // eslint-disable-next-line
+    }, [queries]);
 
     if (queries.error) {
         let eMessage = `: ${queries.error}`;

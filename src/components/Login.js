@@ -3,7 +3,6 @@ import { UserContext } from "../context/UserContext";
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useForm } from "react-hook-form";
-import '../styles/buttons.css';
 
 const Login = ({ setSignUp }) => {
   // eslint-disable-next-line no-unused-vars

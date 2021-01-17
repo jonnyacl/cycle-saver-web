@@ -3,7 +3,6 @@ import { UserContext } from "../context/UserContext";
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import config from '../config';
-import '../styles/buttons.css';
 
 const Signup = ({ setSignUp }) => {
 
@@ -27,7 +26,7 @@ const Signup = ({ setSignUp }) => {
       u.user.sendEmailVerification(actionCodeSettings)
         .catch(e => {
           console.error(`Failed to send confirm email: ${JSON.stringify(e)}`);
-        })
+        });
       u.user.getIdToken().then(idToken => {
         const user = { signedInUser: u.user, idToken };
         setIsLoading(false);

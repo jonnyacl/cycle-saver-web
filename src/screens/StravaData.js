@@ -3,14 +3,17 @@ import { UserContext } from "../context/UserContext";
 import { StravaConnect } from "../components/StravaConnect";
 import ApiCaller from '../api/ApiWrapper';
 import moment from 'moment';
+import { useHistory } from 'react-router-dom';
+import '../styles/web/activities.scss';
 
 export const StravaData = () => {
 
     const [userState, dispatch] = useContext(UserContext);
+    const history = useHistory();
 
-    const [isLoading, setIsLoading] = useState(!userState.strava || !userState.strava.activities);
+    const [isLoading, setIsLoading] = useState(userState.strava && !userState.strava.activities);
 
-    if (userState && userState.user && !userState.strava.activities) {
+    if (userState && userState.user && userState.strava && !userState.strava.activities) {
         // fetch strava data
         const { user } = userState;
         const actReq = new ApiCaller(`/${user.uid}/activities`, "get");
@@ -28,38 +31,46 @@ export const StravaData = () => {
         );
     }
     const stravaProfile = userState && userState.strava && userState.strava.profile? userState.strava.profile : null;
-    const stravaActs = userState && userState.strava && userState.strava.activities ? userState.strava.activities : null;
+    const stravaActs = userState && userState.strava && userState.strava.activities ? 
+        userState.strava.activities.sort((a, b) => {
+            return moment(b.start_date_local).diff(moment(a.start_date_local));
+        }) : [];
     if (stravaProfile) {
         console.log('Athlete', stravaProfile);
     }
     if (stravaActs) {
         console.log('Activities', stravaActs);
     }
-    return (
-        <div>
-            {stravaProfile ?
-                <div>
+    if (stravaProfile) {
+        return (
+            <div className="strava_data">
+                <div className="welcome">
                     Welcome {stravaProfile.firstname}
-                    {stravaActs && (
-                        <ul>
-                            {stravaActs.map((act, i) => {
-                                return (
-                                    <li key={`activity-${i}`}>
-                                        {moment(act.start_date_local).format('DD/MM/YY')}: {act.name}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                </div> 
-                : userState &&
+                </div>
+                {stravaActs && (
+                    <ul>
+                        {stravaActs.map((act) => {
+                            return (
+                                <li className="strava_act" key={act.id} onClick={() => { history.push(`/activity/${act.id}`)}}>
+                                    {moment(act.start_date_local).format('DD/MM/YY')}: {act.name}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </div> 
+        );
+    }
+    if (userState) {
+        return (
+            <div>
+                <div>See how much you save by running, walking or cycling to work. N+1</div>
                 <div>
-                    <div>See how much you save by running, walking or cycling to work. N+1</div>
-                    <div>
-                        First, please connect your Strava account so we can analyse your commutes to calculate your savings.
-                    </div>
-                    <StravaConnect />
-                </div>}
-        </div>
-    );
+                    First, please connect your Strava account so we can analyse your commutes to calculate your savings.
+                </div>
+                <StravaConnect />
+            </div>
+        );
+    }
+    return null;
 };
