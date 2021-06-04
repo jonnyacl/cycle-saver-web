@@ -130,6 +130,13 @@ const App = () => {
             : userDetails && userState.user ?
               <>
                 <div className="app-main">
+                <Route
+                    path="/signup/confirm"
+                    exact
+                    component={() =>
+                      <SignupConfirm />
+                    }
+                  />
                   <Route
                     path="/strava/token"
                     exact

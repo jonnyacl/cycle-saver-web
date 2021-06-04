@@ -50,6 +50,16 @@ export const UserReducer = (state, action) => {
           profile: action.athlete,
         }
       };
+    case 'STRAVA_CONNECT_SUCCESS':
+      axios.defaults.headers["Authorization"] = `Bearer ${action.user.idToken}`;
+      return {
+        ...state,
+        strava: {
+          ...state.strava,
+          connected: true,
+          profile: action.athlete,
+        }
+      };
     case 'STRAVA_ACTIVITY_SUCCESS':
       return {
         ...state,

@@ -37,6 +37,7 @@ export const StravaConnect = () => {
         return (
             <div>
                 <img className="clickable" src={stravaButton} alt="strava_connecting"/>
+                <div>Connecting...</div>
             </div>
         );
     }
