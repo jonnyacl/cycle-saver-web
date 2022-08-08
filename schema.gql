@@ -1,0 +1,23 @@
+type Athlete {
+  id: String
+  connected: String
+  firstname: String
+  lastname: String
+  profile: String
+  country: String
+  city: String
+  username: String
+}
+
+type StravaSignIn {
+  url: String!
+}
+
+type Query {
+  getStravaSignIn(isMobile: Boolean): StravaSignIn
+  getAthlete(id: String!): Athlete
+}
+
+type Mutation {
+  createAthlete(code: String!): Athlete
+}

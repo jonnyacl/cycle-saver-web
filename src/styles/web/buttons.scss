@@ -1,0 +1,17 @@
+.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.signIn-link {
+  cursor: pointer;
+  padding: 8px;
+}
+
+.active {
+  color: blue;
+}
+
+.active:hover {
+  text-decoration: underline;
+}
